@@ -1,0 +1,7 @@
+This project was built by a team of 4 members.
+
+As a part of Software Development course, we have built a web application which simulates the university management.
+
+The application is built using Springboot for the back-end and we have used JSP to build the front-end of the application.
+
+The data is stored in a MySQL database.
