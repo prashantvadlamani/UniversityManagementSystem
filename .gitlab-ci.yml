@@ -1,0 +1,47 @@
+image: gradle:jdk15
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+  - chmod +x UMS/gradlew
+
+stages:
+  - build
+  - test
+  - deploy
+  
+build:
+  stage: build
+  script:
+    - cd UMS/
+    - ./gradlew assemble
+  tags:
+    - dalfcs_gitlab_docker_ci
+    
+test:
+  stage: test
+  script:
+    - cd UMS/
+    - ./gradlew check
+  artifacts:
+    when: always
+    paths:
+      - UMS/build/test-results/test/TEST-*.xml
+    reports:
+      junit: UMS/build/test-results/test/TEST-*.xml
+  tags:
+    - dalfcs_gitlab_docker_ci
+
+deploy:
+  stage: deploy
+  image: ruby:latest
+  script:
+    - cd UMS/
+    - gem install dpl
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
+  environment:
+    name: staging
+    url: https://project5308.herokuapp.com/
+  only:
+    - branches
+  tags:
+    - dalfcs_gitlab_docker_ci
